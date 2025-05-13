@@ -1,5 +1,5 @@
 import { SubPocket } from "src/sub-pockets/entities/sub-pocket.entity";
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Condition {
@@ -19,5 +19,6 @@ export class Condition {
         value: string;
 
         @OneToOne(() => SubPocket, (subPocket) => subPocket.condition , { onDelete: 'CASCADE' })
+        @JoinColumn()
         subPockets: SubPocket;
 }

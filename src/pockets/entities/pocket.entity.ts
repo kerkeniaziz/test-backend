@@ -1,5 +1,5 @@
 import {  SubPocket } from "src/sub-pockets/entities/sub-pocket.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 
@@ -19,6 +19,7 @@ export class Pocket {
         order: number;
 
         @OneToMany(() => SubPocket, (subPocket) => subPocket.pocket , { onDelete: 'CASCADE' })
+        @JoinColumn()
         subPockets: SubPocket[];
 
 }

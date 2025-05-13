@@ -1,5 +1,5 @@
 import { SubPocket } from "src/sub-pockets/entities/sub-pocket.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Note {
@@ -10,5 +10,6 @@ export class Note {
             description: string;
     
             @ManyToOne(() =>  SubPocket, (SubPocket) => SubPocket.notes , { onDelete: 'CASCADE' })
+            @JoinColumn()
             subPockets: SubPocket;
 }

@@ -35,14 +35,15 @@ export class PocketsService {
   }
 
   async findByUser(user: User) {
+    
     const pockets = await this.PocketRepo.find({
-      relations: ['user', 'subPockets', 'subPockets.condition'],
+      relations: ['subPockets', 'subPockets.condition'],
     });
   
     if (!pockets || pockets.length === 0) {
       throw new Error('No pockets found');
     }
-  
+    console.log('pockets:', pockets);
     
     const filteredPockets = pockets
       .map(pocket => {
@@ -76,7 +77,7 @@ export class PocketsService {
       .filter(pocket => pocket.subPockets.length > 0); // keep only pockets with matching subPockets
   
     if (filteredPockets.length === 0) {
-      throw new Error('No matching pockets found for this user');
+      return {message:'No matching pockets found for this user'};
     }
   
     return filteredPockets;
