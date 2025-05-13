@@ -28,9 +28,9 @@ export class PocketsController {
     return this.pocketsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePocketDto: UpdatePocketDto) {
-    return this.pocketsService.update(+id, updatePocketDto);
+  @Patch()
+  update(@Body() updatePocketDto: UpdatePocketDto) {
+    return this.pocketsService.update(updatePocketDto);
   }
 
   @Delete(':id')

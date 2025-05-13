@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePocketDto } from './dto/create-pocket.dto';
 import { UpdatePocketDto } from './dto/update-pocket.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,7 +35,7 @@ export class PocketsService {
   }
 
   async findByUser(user: User) {
-    
+
     const pockets = await this.PocketRepo.find({
       relations: ['subPockets', 'subPockets.condition'],
     });
@@ -43,13 +43,13 @@ export class PocketsService {
     if (!pockets || pockets.length === 0) {
       throw new Error('No pockets found');
     }
-    console.log('pockets:', pockets);
+    
     
     const filteredPockets = pockets
       .map(pocket => {
         const matchingSubPockets = pocket.subPockets.filter(sub => {
           const condition:any = sub.condition;
-          if (!condition) return true; // include if no condition
+          if (!condition) return sub; // include if no condition
   
           const userFieldValue = user[condition.field];
   
@@ -80,11 +80,21 @@ export class PocketsService {
       return {message:'No matching pockets found for this user'};
     }
   
-    return filteredPockets;
+   // return filteredPockets;
+   return pockets ;
   }
 
-  update(id: number, updatePocketDto: UpdatePocketDto) {
-    return `This action updates a #${id} pocket`;
+  async update( updatePocketDto: UpdatePocketDto): Promise<Pocket> {
+    const { id, order } = updatePocketDto;
+  
+    const pocket = await this.PocketRepo.findOne({ where: { id } });
+  
+    if (!pocket) {
+      throw new NotFoundException(`Pocket with id ${id} not found`);
+    }
+  
+    pocket.order = order;
+    return await this.PocketRepo.save(pocket); 
   }
 
   remove(id: number) {
