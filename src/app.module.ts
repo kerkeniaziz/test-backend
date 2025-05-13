@@ -8,7 +8,6 @@ import { PocketsModule } from './pockets/pockets.module';
 import { SubPocketsModule } from './sub-pockets/sub-pockets.module';
 import { NoteModule } from './note/note.module';
 import { ConditionModule } from './condition/condition.module';
-import { ConditionModule } from './condition/condition.module';
 
 @Module({
   imports: [UserModule,    

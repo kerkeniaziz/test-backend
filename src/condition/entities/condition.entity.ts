@@ -7,10 +7,10 @@ export class Condition {
         id: string;
       
         @Column()
-        fied: string;
+        field: string;
       
         @Column()
-        type: number |string;
+        type: string;
       
         @Column()
         operator: string;

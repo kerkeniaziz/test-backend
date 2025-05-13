@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PocketsService } from './pockets.service';
 import { CreatePocketDto } from './dto/create-pocket.dto';
 import { UpdatePocketDto } from './dto/update-pocket.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @Controller('pockets')
 export class PocketsController {
@@ -17,10 +18,10 @@ export class PocketsController {
     return this.pocketsService.findAll();
   }
 
-  @Get('user')
-  findByUser() {
-    return this.pocketsService.findByUser();
-  }
+  // @Get('user')
+  // findByUser(@Body() user: User) {
+  //   return this.pocketsService.findByUser(user);
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

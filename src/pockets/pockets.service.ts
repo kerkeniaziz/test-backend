@@ -4,6 +4,8 @@ import { UpdatePocketDto } from './dto/update-pocket.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Pocket } from './entities/pocket.entity';
 import { Repository } from 'typeorm';
+import { User } from 'src/user/entities/user.entity';
+import { Condition } from 'src/condition/entities/condition.entity';
 
 @Injectable()
 export class PocketsService {
@@ -32,28 +34,62 @@ export class PocketsService {
     return `This action returns a #${id} pocket`;
   }
 
-  async findByUser() {
-    const pockets= await this.PocketRepo.find({
-      relations: ['user','subPockets'],
-    });
-
-    if (!pockets) {
-      throw new Error('No pockets found');
-    }
-    
-    const pocketwithoutSubPockets = pockets.filter(pocket => !pocket.subPockets);
-
-    if (pocketwithoutSubPockets.length === 0) {
-      throw new Error('No subPockets found for this user');
-    }
-    const pocketCondition = pockets.subPockets.condition; 
-
-    const filteredPockets = pockets.filter(pocket => pocket.subPockets === pocketCondition);
-    if (filteredPockets.length === 0) {
-      throw new Error('No pockets found for this user');
-    }
-    return pockets;
-  } 
+  // async findByUser(user: User) {
+  //   const pockets = await this.PocketRepo.find({
+  //     relations: ['user', 'subPockets', 'subPockets.condition'],
+  //   });
+  
+  //   if (!pockets || pockets.length === 0) {
+  //     throw new Error('No pockets found');
+  //   }
+  
+  //   // Filter each pocket to only include subPockets that match their condition
+  //   const filteredPockets = pockets
+  //     .map(pocket => {
+  //       const matchingSubPockets = pocket.subPockets.filter(sub => {
+  //         const condition = sub.condition;
+  //         if (!condition) return true; // include if no condition
+  
+  //         const userFieldValue = (user as any)[condition.field];
+  
+  //         switch (condition.operator) {
+  //           case '==':
+  //           case '=':
+  //             return userFieldValue == condition.value;
+  //           case '===':
+  //             return userFieldValue === condition.value;
+  //           case '!=':
+  //             return userFieldValue != condition.value;
+  //           case '!==':
+  //             return userFieldValue !== condition.value;
+  //           case '>':
+  //             return userFieldValue > condition.value;
+  //           case '<':
+  //             return userFieldValue < condition.value;
+  //           case '>=':
+  //             return userFieldValue >= condition.value;
+  //           case '<=':
+  //             return userFieldValue <= condition.value;
+  //           case 'includes':
+  //             return typeof userFieldValue === 'string' && userFieldValue.includes(condition.value);
+  //           default:
+  //             return false;
+  //         }
+  //       });
+  
+  //       return {
+  //         ...pocket,
+  //         subPockets: matchingSubPockets,
+  //       };
+  //     })
+  //     .filter(pocket => pocket.subPockets.length > 0); // keep only pockets with matching subPockets
+  
+  //   if (filteredPockets.length === 0) {
+  //     throw new Error('No matching pockets found for this user');
+  //   }
+  
+  //   return filteredPockets;
+  // }
 
   update(id: number, updatePocketDto: UpdatePocketDto) {
     return `This action updates a #${id} pocket`;
