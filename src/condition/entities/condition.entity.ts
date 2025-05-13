@@ -10,7 +10,7 @@ export class Condition {
         field: string;
       
         @Column()
-        type: string;
+        type: string ;
       
         @Column()
         operator: string;

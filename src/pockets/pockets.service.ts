@@ -34,62 +34,53 @@ export class PocketsService {
     return `This action returns a #${id} pocket`;
   }
 
-  // async findByUser(user: User) {
-  //   const pockets = await this.PocketRepo.find({
-  //     relations: ['user', 'subPockets', 'subPockets.condition'],
-  //   });
+  async findByUser(user: User) {
+    const pockets = await this.PocketRepo.find({
+      relations: ['user', 'subPockets', 'subPockets.condition'],
+    });
   
-  //   if (!pockets || pockets.length === 0) {
-  //     throw new Error('No pockets found');
-  //   }
+    if (!pockets || pockets.length === 0) {
+      throw new Error('No pockets found');
+    }
   
-  //   // Filter each pocket to only include subPockets that match their condition
-  //   const filteredPockets = pockets
-  //     .map(pocket => {
-  //       const matchingSubPockets = pocket.subPockets.filter(sub => {
-  //         const condition = sub.condition;
-  //         if (!condition) return true; // include if no condition
+    
+    const filteredPockets = pockets
+      .map(pocket => {
+        const matchingSubPockets = pocket.subPockets.filter(sub => {
+          const condition:any = sub.condition;
+          if (!condition) return true; // include if no condition
   
-  //         const userFieldValue = (user as any)[condition.field];
+          const userFieldValue = user[condition.field];
   
-  //         switch (condition.operator) {
-  //           case '==':
-  //           case '=':
-  //             return userFieldValue == condition.value;
-  //           case '===':
-  //             return userFieldValue === condition.value;
-  //           case '!=':
-  //             return userFieldValue != condition.value;
-  //           case '!==':
-  //             return userFieldValue !== condition.value;
-  //           case '>':
-  //             return userFieldValue > condition.value;
-  //           case '<':
-  //             return userFieldValue < condition.value;
-  //           case '>=':
-  //             return userFieldValue >= condition.value;
-  //           case '<=':
-  //             return userFieldValue <= condition.value;
-  //           case 'includes':
-  //             return typeof userFieldValue === 'string' && userFieldValue.includes(condition.value);
-  //           default:
-  //             return false;
-  //         }
-  //       });
+          switch (condition.operator) {
+            case '=':
+              return userFieldValue == condition.value;
+            case '>':
+              return +userFieldValue > condition.value;
+            case '<':
+              return +userFieldValue < condition.value;
+            case 'startsWith':
+              return typeof userFieldValue === 'string' && userFieldValue.startsWith(condition.value);
+            case 'endsWith':
+              return typeof userFieldValue === 'string' && userFieldValue.endsWith(condition.value);
+            default:
+              return false;
+          }
+        });
   
-  //       return {
-  //         ...pocket,
-  //         subPockets: matchingSubPockets,
-  //       };
-  //     })
-  //     .filter(pocket => pocket.subPockets.length > 0); // keep only pockets with matching subPockets
+        return {
+          ...pocket,
+          subPockets: matchingSubPockets,
+        };
+      })
+      .filter(pocket => pocket.subPockets.length > 0); // keep only pockets with matching subPockets
   
-  //   if (filteredPockets.length === 0) {
-  //     throw new Error('No matching pockets found for this user');
-  //   }
+    if (filteredPockets.length === 0) {
+      throw new Error('No matching pockets found for this user');
+    }
   
-  //   return filteredPockets;
-  // }
+    return filteredPockets;
+  }
 
   update(id: number, updatePocketDto: UpdatePocketDto) {
     return `This action updates a #${id} pocket`;

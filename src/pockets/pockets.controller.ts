@@ -18,10 +18,10 @@ export class PocketsController {
     return this.pocketsService.findAll();
   }
 
-  // @Get('user')
-  // findByUser(@Body() user: User) {
-  //   return this.pocketsService.findByUser(user);
-  // }
+  @Get('user')
+  findByUser(@Body() user: User) {
+    return this.pocketsService.findByUser(user);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
