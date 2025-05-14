@@ -51,22 +51,33 @@ export class PocketsService {
           const condition: any = sub.condition;
           
           if (!condition) return false; // dont include if no condition
-          //console.log('condition', condition);
-          const userFieldValue = user.selectedUser[condition.field];
           
-          switch (condition.operator) {
-            case '=':
-              return userFieldValue == condition.value;
-            case '>':
-              return  +userFieldValue > +condition.value;
-            case '<':
-              return  +userFieldValue < +condition.value;
-            case 'startsWith':
-              return typeof userFieldValue === 'string' && userFieldValue.startsWith(condition.value);
-            case 'endsWith':
-              return typeof userFieldValue === 'string' && userFieldValue.endsWith(condition.value);
-            default:
-              return false;
+          const userFieldValue = user.selectedUser[condition.field];
+          if (condition.type === 'number') {
+            const userValue = +userFieldValue;
+            const conditionValue = +condition.value;
+            switch (condition.operator) {
+              case '=':
+                return userValue == conditionValue;
+              case '>':
+                return  userValue > conditionValue;
+              case '<':
+                return  userValue < conditionValue; 
+              default:
+                return false;
+            }
+          }
+          else {
+            switch (condition.operator) {
+              case '=':
+                return userFieldValue == condition.value;
+              case 'startsWith':
+                return  userFieldValue.startsWith(condition.value);
+              case 'endsWith':
+                return  userFieldValue.endsWith(condition.value);
+              default:
+                return false;
+            }
           }
         });
         
