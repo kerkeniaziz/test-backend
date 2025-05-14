@@ -22,10 +22,11 @@ export class SubPocketsController {
     return this.subPocketsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubPocketDto: UpdateSubPocketDto) {
-    return this.subPocketsService.update(+id, updateSubPocketDto);
+  @Patch()
+  update( @Body() updateSubPocketDto: UpdateSubPocketDto) {
+    return this.subPocketsService.update(updateSubPocketDto);
   }
+
 
   @Delete(':id')
   remove(@Param('id') id: string) {

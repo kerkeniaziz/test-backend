@@ -34,6 +34,8 @@ export class PocketsService {
     return `This action returns a #${id} pocket`;
   }
 
+
+  ///////////////////////////////
   async findByUser(user: User) {
 
     const pockets = await this.PocketRepo.find({
@@ -49,7 +51,7 @@ export class PocketsService {
       .map(pocket => {
         const matchingSubPockets = pocket.subPockets.filter(sub => {
           const condition:any = sub.condition;
-          if (!condition) return sub; // include if no condition
+          if (!condition) return true; // include if no condition
   
           const userFieldValue = user[condition.field];
   
@@ -57,9 +59,9 @@ export class PocketsService {
             case '=':
               return userFieldValue == condition.value;
             case '>':
-              return +userFieldValue > condition.value;
+              return +userFieldValue > +condition.value;
             case '<':
-              return +userFieldValue < condition.value;
+              return +userFieldValue < +condition.value;
             case 'startsWith':
               return typeof userFieldValue === 'string' && userFieldValue.startsWith(condition.value);
             case 'endsWith':

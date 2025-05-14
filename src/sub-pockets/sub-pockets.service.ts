@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSubPocketDto } from './dto/create-sub-pocket.dto';
 import { UpdateSubPocketDto } from './dto/update-sub-pocket.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,9 +27,18 @@ export class SubPocketsService {
     return `This action returns a #${id} subPocket`;
   }
 
-  update(id: number, updateSubPocketDto: UpdateSubPocketDto) {
-    return `This action updates a #${id} subPocket`;
+  async update(updateSubPocketDto: UpdateSubPocketDto): Promise<SubPocket> {
+    const { id, order } = updateSubPocketDto;
+    
+      const pocket = await this.SubPocketRepo.findOne({ where: { id } });
+    
+      if (!pocket) {
+        throw new NotFoundException(`Pocket with id ${id} not found`);
+      }
+      pocket.order = order;
+      return await this.SubPocketRepo.save(pocket); 
   }
+   
 
   remove(id: number) {
     return `This action removes a #${id} subPocket`;

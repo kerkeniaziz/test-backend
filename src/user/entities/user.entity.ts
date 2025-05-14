@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Note } from "src/note/entities/note.entity";
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 export enum UserRole {
@@ -38,5 +39,9 @@ export class User {
         default: UserRole.USER,
       })
     role: UserRole
+
+    @OneToMany(() =>  Note, (note) => note.user , { onDelete: 'CASCADE' })
+    @JoinColumn()
+    notes: Note[];
 
 }
