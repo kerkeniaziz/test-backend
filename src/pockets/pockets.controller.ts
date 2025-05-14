@@ -19,7 +19,7 @@ export class PocketsController {
   }
 
   @Post('/user')
-  findByUser(@Body() user: User) {
+  findByUser(@Body() user: any) {
     return this.pocketsService.findByUser(user);
   }
 

@@ -22,7 +22,7 @@ export class PocketsService {
 
   async findAll() {
     const pockets = this.PocketRepo.find({
-      relations: ['subPockets'],
+      relations: ['subPockets','subPockets.condition'],
     });
     if (!pockets) {
       throw new Error('No pockets found');
@@ -36,7 +36,7 @@ export class PocketsService {
 
 
   ///////////////////////////////
-  async findByUser(user: User) {
+  async findByUser(user: any) {
 
     const pockets = await this.PocketRepo.find({
       relations: ['subPockets', 'subPockets.condition', 'subPockets.notes', 'subPockets.notes.user'],
@@ -45,24 +45,22 @@ export class PocketsService {
     if (!pockets || pockets.length === 0) {
       throw new Error('No pockets found');
     }
-    
-    
     const filteredPockets = pockets
       .map(pocket => {
         const matchingSubPockets = pocket.subPockets.filter(sub => {
           const condition: any = sub.condition;
-          console.log('condition', condition);
+          
           if (!condition) return false; // dont include if no condition
-  
-          const userFieldValue = user[condition.field];
-          console.log('userFieldValue', userFieldValue);
+          //console.log('condition', condition);
+          const userFieldValue = user.selectedUser[condition.field];
+          
           switch (condition.operator) {
             case '=':
               return userFieldValue == condition.value;
             case '>':
-              return +userFieldValue > +condition.value;
+              return  +userFieldValue > +condition.value;
             case '<':
-              return +userFieldValue < +condition.value;
+              return  +userFieldValue < +condition.value;
             case 'startsWith':
               return typeof userFieldValue === 'string' && userFieldValue.startsWith(condition.value);
             case 'endsWith':
@@ -71,20 +69,20 @@ export class PocketsService {
               return false;
           }
         });
-  console.log('matchingSubPockets', matchingSubPockets);
+        
         return {
           ...pocket,
           subPockets: matchingSubPockets,
         };
       })
       .filter(pocket => pocket.subPockets.length > 0); // keep only pockets with matching subPockets
-  
+
     if (filteredPockets.length === 0) {
       return {message:'No matching pockets found for this user'};
     }
   
-   // return filteredPockets;
-   return pockets ;
+    return filteredPockets;
+   
   }
 
   async update( updatePocketDto: UpdatePocketDto): Promise<Pocket> {
