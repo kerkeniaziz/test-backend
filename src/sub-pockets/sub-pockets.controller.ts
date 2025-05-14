@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { SubPocketsService } from './sub-pockets.service';
 import { CreateSubPocketDto } from './dto/create-sub-pocket.dto';
 import { UpdateSubPocketDto } from './dto/update-sub-pocket.dto';
+import { CreateSubPocketNoteDto } from './dto/create-sub-pocket-note.dto';
 
 @Controller('sub-pockets')
 export class SubPocketsController {
@@ -10,6 +11,11 @@ export class SubPocketsController {
   @Post()
   create(@Body() createSubPocketDto: CreateSubPocketDto) {
     return this.subPocketsService.create(createSubPocketDto);
+  }
+
+  @Post('/addNote')
+  addNote(@Body() createSubPocketNoteDto: CreateSubPocketNoteDto) {
+    return this.subPocketsService.addNote(createSubPocketNoteDto);
   }
 
   @Get()

@@ -4,18 +4,28 @@ import { UpdateSubPocketDto } from './dto/update-sub-pocket.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SubPocket } from './entities/sub-pocket.entity';
 import { Repository } from 'typeorm';
+import { CreateSubPocketNoteDto } from './dto/create-sub-pocket-note.dto';
+import { Note } from 'src/note/entities/note.entity';
 
 @Injectable()
 export class SubPocketsService {
   constructor(
         @InjectRepository(SubPocket)
         private readonly SubPocketRepo: Repository<SubPocket>,
+        @InjectRepository(Note)
+        private readonly NoteRepo: Repository<Note>,
         
       ) {}
 
   async create(createSubPocketDto: CreateSubPocketDto) {
     const subPocket = this.SubPocketRepo.create(createSubPocketDto);
     await this.SubPocketRepo.save(subPocket);
+    return subPocket;
+  }
+
+  async addNote(createSubPocketNoteDto: CreateSubPocketNoteDto) {
+    const subPocket = this.NoteRepo.create(createSubPocketNoteDto);
+    await this.NoteRepo.save(subPocket);
     return subPocket;
   }
 

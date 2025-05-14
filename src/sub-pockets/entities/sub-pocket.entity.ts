@@ -25,7 +25,7 @@ export class SubPocket {
         @JoinColumn()
         pocket: Pocket;
 
-        @OneToMany(() => Note, (Note) => Note.subPockets , { onDelete: 'CASCADE' })
+        @OneToMany(() => Note, (Note) => Note.subPocket , { onDelete: 'CASCADE' })
         @JoinColumn()
         notes: Note[];
 

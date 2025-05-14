@@ -12,9 +12,9 @@ export class Note {
     
             @ManyToOne(() =>  SubPocket, (SubPocket) => SubPocket.notes , { onDelete: 'CASCADE' })
             @JoinColumn()
-            subPockets: SubPocket;
+            subPocket: SubPocket;
 
-            @OneToOne(() =>  User, (user) => user.notes , { onDelete: 'CASCADE' })
+            @ManyToOne(() =>  User, (user) => user.notes , { onDelete: 'CASCADE' })
             @JoinColumn()
             user: User;
 }

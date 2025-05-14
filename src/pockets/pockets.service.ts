@@ -39,7 +39,7 @@ export class PocketsService {
   async findByUser(user: User) {
 
     const pockets = await this.PocketRepo.find({
-      relations: ['subPockets', 'subPockets.condition'],
+      relations: ['subPockets', 'subPockets.condition', 'subPockets.notes', 'subPockets.notes.user'],
     });
   
     if (!pockets || pockets.length === 0) {
