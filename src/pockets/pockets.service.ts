@@ -50,11 +50,12 @@ export class PocketsService {
     const filteredPockets = pockets
       .map(pocket => {
         const matchingSubPockets = pocket.subPockets.filter(sub => {
-          const condition:any = sub.condition;
-          if (!condition) return true; // include if no condition
+          const condition: any = sub.condition;
+          console.log('condition', condition);
+          if (!condition) return false; // dont include if no condition
   
           const userFieldValue = user[condition.field];
-  
+          console.log('userFieldValue', userFieldValue);
           switch (condition.operator) {
             case '=':
               return userFieldValue == condition.value;
@@ -70,7 +71,7 @@ export class PocketsService {
               return false;
           }
         });
-  
+  console.log('matchingSubPockets', matchingSubPockets);
         return {
           ...pocket,
           subPockets: matchingSubPockets,
