@@ -1,11 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePocketDto } from './dto/create-pocket.dto';
 import { UpdatePocketDto } from './dto/update-pocket.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Pocket } from './entities/pocket.entity';
 import { Repository } from 'typeorm';
-import { User } from 'src/user/entities/user.entity';
-import { Condition } from 'src/condition/entities/condition.entity';
+import { UpdatePocketOrderDto } from './dto/update-pocket-order.dto';
 
 @Injectable()
 export class PocketsService {
@@ -30,8 +29,31 @@ export class PocketsService {
     return pockets;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} pocket`;
+  async updateOrder(updatePocketOrderDto: UpdatePocketOrderDto) {
+    const { updates } = updatePocketOrderDto;
+  
+    // On récupère toutes les subPockets concernées par les IDs
+    const ids = updates.map(update => update.id);
+    const existingSubPockets = await this.PocketRepo.findByIds(ids);
+  
+    if (existingSubPockets.length !== updates.length) {
+      throw new BadRequestException('One or more subPockets not found.');
+    }
+  
+    // On crée une map pour accéder plus facilement aux updates par ID
+    const updatesMap = new Map(updates.map(u => [u.id, u.order]));
+  
+    // Mise à jour des ordres
+    for (const subPocket of existingSubPockets) {
+      const newOrder = updatesMap.get(subPocket.id);
+      if (typeof newOrder === 'number' && subPocket.order !== newOrder) {
+        subPocket.order = newOrder;
+      }
+    }
+  
+    await this.PocketRepo.save(existingSubPockets);
+  
+    return { message: 'Order updated successfully' };
   }
 
 
@@ -87,7 +109,7 @@ export class PocketsService {
         };
       })
       .filter(pocket => pocket.subPockets.length > 0); // keep only pockets with matching subPockets
-
+      console.log('filteredPockets', filteredPockets);
     if (filteredPockets.length === 0) {
       return {message:'No matching pockets found for this user'};
     }

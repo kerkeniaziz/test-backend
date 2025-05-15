@@ -3,6 +3,7 @@ import { SubPocketsService } from './sub-pockets.service';
 import { CreateSubPocketDto } from './dto/create-sub-pocket.dto';
 import { UpdateSubPocketDto } from './dto/update-sub-pocket.dto';
 import { CreateSubPocketNoteDto } from './dto/create-sub-pocket-note.dto';
+import { UpdateSubPocketOrderDto } from './dto/update-sub-pocket-order.dto';
 
 @Controller('sub-pockets')
 export class SubPocketsController {
@@ -31,6 +32,12 @@ export class SubPocketsController {
   @Patch()
   update( @Body() updateSubPocketDto: UpdateSubPocketDto) {
     return this.subPocketsService.update(updateSubPocketDto);
+  }
+
+
+  @Patch('order')
+  updateOrder( @Body() updateSubPocketOrderDto: UpdateSubPocketOrderDto) {
+    return this.subPocketsService.updateOrder(updateSubPocketOrderDto);
   }
 
 
